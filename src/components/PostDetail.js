@@ -13,7 +13,7 @@ const PostDetail = (props) => {
   return (
     <div className='post-detail'>
       <div>Id: {props.postDetail.id}</div>
-      <div>Post: {props.postDetail.title}</div>
+      <div>Title: {props.postDetail.title}</div>
       <div>Content: {props.postDetail.content}</div>
       <div className='action-button'>
         <button onClick={(e) => { editHandler(e) }}>Edit</button>

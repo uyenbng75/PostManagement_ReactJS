@@ -3,6 +3,7 @@ import Post from '../components/Post'
 import Posts from '../components/Posts'
 import PostDetail from '../components/PostDetail'
 import axios from 'axios'
+import AddPost from '../components/AddPost'
 
 const Dashboard = () => {
     //Default not choosing any post
@@ -11,6 +12,7 @@ const Dashboard = () => {
     const [currentTitle, setCurrentTitle] = useState("");
     const [username, setUsername] = useState("user");
     const [password, setPassword] = useState("1");
+    const [flag, setFlag] = useState(true);
 
     //Handling when selected a post
     const selectedItemHandler = (post) => {
@@ -22,14 +24,14 @@ const Dashboard = () => {
     //console.log("post value" + postDetail);
     //Handling when clicked button "Change title"
     const changeTitleHandler = () => {
-        postDetail.Title = currentTitle;
+        postDetail.title = currentTitle;
         setPostDetail({ ...postDetail })
     }
 
-    // useEffect(() => {
-    //     if (postDetail)
-    //         setCurrentTitle(postDetail.Title)
-    // }, [postDetail])
+    useEffect(() => {
+        if (postDetail)
+            setCurrentTitle(postDetail.Title)
+    }, [postDetail])
 
     //Handling delete post
     const deleteHandler = (id) => {
@@ -61,10 +63,14 @@ const Dashboard = () => {
             .catch(err => console.log(err.message));
     }
 
-    console.log("post fetch:::", posts);
+    //Tracking flag change
     useEffect(() => {
         fetchPosts();
-    }, [username, password])
+    }, [flag])
+
+    const flagHandler = () => {
+        setFlag(!flag);
+    }
 
     return (
         <>
@@ -78,7 +84,7 @@ const Dashboard = () => {
                     <button onClick={changeTitleHandler}>Change title</button>
                 </div>
                 <div className='add-post'>
-                    
+                    <AddPost flagHandler = {flagHandler}></AddPost>
                 </div>
             </div>
             {<div className='post-detail'>
