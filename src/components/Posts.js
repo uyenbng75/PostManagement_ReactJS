@@ -1,22 +1,36 @@
 import React, { useState } from 'react'
-import Post from '../components/Post'
+import Post from './Post';
 
+const Posts = (props) => {
+    /* const [posts, setPosts] = useState([
+        {
+            Id: 111,
+            Title: 'Happiness',
+            Author: 'John',
+            Content: 'Content of 111'
+        },
+        {
+            Id: 112,
+            Title: 'MIU',
+            Author: 'Dean',
+            Content: 'Content of 112'
+        },
+        {
+            Id: 113,
+            Title: 'Enjoy Life',
+            Author: 'Jasmine',
+            Content: 'Content of 113'
+        }
+    ]) */
 
-const Posts = ({ selectedItem, data }) => {
-    const selectedItemHandler = (post) => {
-        selectedItem(post)
-    }
+    // const selectedHandler = (post) => {
+    //     props.selectedPost(post);
+    // }
 
-    const posts = data.map(p => {
-        return <Post
-            id={p.id}
-            title={p.title}
-            author={p.author}
-
-            onClickItem={selectedItemHandler(p)}
-        />
+    const result = props.posts.map((p) => {
+        return <Post post={p} key={p.id} selectedinPost={() => props.selectedPost(p)} />
     })
-
-    return <>{posts}</>
+    return result;
 }
-    export default Posts
+
+export default Posts

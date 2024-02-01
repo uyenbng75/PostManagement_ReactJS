@@ -1,46 +1,95 @@
-import React, { useEffect, useState } from 'react';
-import Posts from '../components/Posts';
+import React, { useState, useEffect } from 'react'
+import Post from '../components/Post'
+import Posts from '../components/Posts'
+import PostDetail from '../components/PostDetail'
+import axios from 'axios'
 
 const Dashboard = () => {
-  const [postDetail, setPostDetail] = useState(null);
-  const [postState, setPostState] = useState([
-    { id: 111, title: 'Happiness', author: 'John' },
-    { id: 112, title: 'MIU', author: 'Dean' },
-    { id: 113, title: 'Enjoy Life', author: 'Jasmine' }
-  ])
-  const [post, setPost] = useState({
-    title: ""
-  });
+    //Default not choosing any post
+    const [posts, setPosts] = useState([]);
+    const [postDetail, setPostDetail] = useState(null);
+    const [currentTitle, setCurrentTitle] = useState("");
+    const [username, setUsername] = useState("user");
+    const [password, setPassword] = useState("1");
 
-  const handlerOnChange = (event) => {
-    setPost({ title: event.target.value });
-  }
+    //Handling when selected a post
+    const selectedItemHandler = (post) => {
+        // console.log("SelectPOST::",post);
+        setPostDetail(post);
 
-  const buttonClicked = () => {
-    postState[0].title = post.title;
-    setPostState([...postState])
-  }
+    }
 
-  useEffect(() => {
-    if (postDetail)
-      setPost(postDetail.title)
-  }, [postDetail])
+    //console.log("post value" + postDetail);
+    //Handling when clicked button "Change title"
+    const changeTitleHandler = () => {
+        postDetail.Title = currentTitle;
+        setPostDetail({ ...postDetail })
+    }
 
-  const selectedHandler = (selectedItem) => {
-    setPostDetail(selectedItem);
-  }
-  return (
-    <div className='Dashboard'>
-      <h1>Welcome to Dashboard</h1>
-      <div className='row'>
-        <Posts data={postState} selectedItem={selectedHandler} />
-      </div>
-      <div className='row'>
-        <input type='text' value={post.title} onChange={handlerOnChange} />
-        <button onClick={buttonClicked}>Change Name</button>
-      </div>
-    </div>
-  );
+    // useEffect(() => {
+    //     if (postDetail)
+    //         setCurrentTitle(postDetail.Title)
+    // }, [postDetail])
+
+    //Handling delete post
+    const deleteHandler = (id) => {
+        console.log(id)
+        axios.delete('http://localhost:8080/posts/' + id, {
+            headers: {
+                Authorization: `Basic ${btoa(`${username}:${password}`)}`,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => {
+                fetchPosts();
+            })
+            .catch(err => console.log(err.message));
+    }
+
+    //Handling fetches all posts
+    const fetchPosts = () => {
+        axios.get('http://localhost:8080/posts', {
+            headers: {
+                Authorization: `Basic ${btoa(`${username}:${password}`)}`,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => {
+                setPosts(response.data);
+                console.log(response.data);
+            })
+            .catch(err => console.log(err.message));
+    }
+
+    console.log("post fetch:::", posts);
+    useEffect(() => {
+        fetchPosts();
+    }, [username, password])
+
+    return (
+        <>
+            <div className='container'>
+                <h1>POST MANAGEMENT</h1>
+                <div className='post-card'>
+                    <Posts posts={posts} selectedPost={selectedItemHandler} />
+                </div>
+                <div className='action'>
+                    <input type='text' value={currentTitle} onChange={(e) => setCurrentTitle(e.target.value)} placeholder='Type title' />
+                    <button onClick={changeTitleHandler}>Change title</button>
+                </div>
+                <div className='add-post'>
+                    
+                </div>
+            </div>
+            {<div className='post-detail'>
+                <div>POST DETAIL</div>
+                {postDetail ? <PostDetail postDetail={postDetail} deletePost={deleteHandler}></PostDetail> : "No Post Selected"}
+
+            </div>}
+        </>
+
+
+    )
 }
 
-export default Dashboard;
+export default Dashboard

@@ -1,15 +1,4 @@
-.post-container{
-    width: 150px;
-    height: auto;
-    border: 1px;
-    text-align: left;
-    background-color: yellowgreen;
-    margin: 20px;
-    padding: 10px;
-    color: white;
-}
-
-.row{
-    width: 100%;
-    text-align: left;
+.card {
+    border: solid 3px black;
+    border-radius: 2px;;
 }
